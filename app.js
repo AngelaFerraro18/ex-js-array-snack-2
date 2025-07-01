@@ -56,6 +56,8 @@ console.log(longBooks);
 const longBooksTitles = longBooks.map(b => b.title);
 console.log(longBooksTitles);
 
+longBooksTitles.forEach(t => console.log(t));
+
 
 /* Creare un array (availableBooks) che contiene tutti i libri disponibili.
 Crea un array (discountedBooks) con gli availableBooks, ciascuno con il prezzo scontato del 20% (mantieni lo stesso formato e arrotonda al centesimo)
@@ -65,19 +67,22 @@ const availableBooks = books.filter(b => b.available === true);
 console.log(availableBooks);
 
 const discountedBooks = availableBooks.map(b => {
-    let priceParsed = parseFloat(b.price);
+    let priceParsed = parseFloat(b.price.replace('€', ''));
     console.log(priceParsed);
     let discountedPrice = priceParsed - (priceParsed * 20 / 100);
     return {
         ...b,
-        price: parseFloat(discountedPrice.toFixed(2))
+        price: `${discountedPrice.toFixed(2)}€`
     };
 });
 
 console.log(discountedBooks);
 
-const integerPrice = discountedBooks.find(el => Number.isInteger(el.price));
-console.log(integerPrice);
+const fullPricedBook = discountedBooks.find(el => {
+    let priceParsed = parseFloat(el.price.replace('€', ''));
+    return priceParsed % 1 === 0; //Number.isInteger(priceParsed)
+});
+console.log(fullPricedBook);
 
 
 /* Creare un array (authors) che contiene gli autori dei libri.
@@ -89,10 +94,10 @@ Ordina l’array authors in base all’età, senza creare un nuovo array.
 const authors = books.map(b => b.author);
 console.log(authors);
 
-const areAuthorsAdult = authors.every(a => a.age > 18);
+const areAuthorsAdult = authors.every(a => a.age >= 18);
 console.log((areAuthorsAdult)); //false
 
-authors.sort((a, b) => b.age - a.age);
+authors.sort((a, b) => (a.age - b.age) * (areAuthorsAdult ? 1 : -1));
 
 
 /* Creare un array (ages) che contiene le età degli autori dei libri.
